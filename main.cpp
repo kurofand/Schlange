@@ -18,11 +18,17 @@ bool addNew=false;
 
 char activeKey;
 
+void loseOutput()
+{
+	std::cout<<"You lose!"<<std::endl<<"Your score "<<snake.size()-1<<std::endl;
+	exit(0);
+}
+
 void genFood()
 {
-	xFood=std::rand()%750+SIZE;
+	xFood=std::rand()%750+SIZE*2;
 	xFood=xFood/(SIZE*2)*SIZE*2;
-	yFood=std::rand()%550+SIZE;
+	yFood=std::rand()%550+SIZE*2;
 	yFood=yFood/(SIZE*2)*SIZE*2;
 }
 
@@ -81,6 +87,13 @@ void timer(int)
 	else if(activeKey=='d') snake.at(0).y-=SIZE*2;
 	else if(activeKey=='l') snake.at(0).x-=SIZE*2;
 	else if(activeKey=='r') snake.at(0).x+=SIZE*2;
+	if((snake.at(0).x<0)||(snake.at(0).x>800)||(snake.at(0).y<0)||(snake.at(0).y>600))
+	//	exit(0);
+		loseOutput();
+	for(uint16_t i=2;i<snake.size();i++)
+		if(((snake.at(0).x==snake.at(i).x)&&(snake.at(0).y==snake.at(i).y)))
+			//exit(0);
+			loseOutput();
 	addNew=false;
 	glutTimerFunc(1000, timer, 0);
 }
