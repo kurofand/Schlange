@@ -13,6 +13,7 @@ std::vector<coord> snake;
 
 int x,y;
 int xFood, yFood;
+int timerFreq=1000;
 const int SIZE=25;
 bool addNew=false;
 
@@ -26,10 +27,12 @@ void loseOutput()
 
 void genFood()
 {
-	xFood=std::rand()%750+SIZE*2;
+	xFood=std::rand()%750+SIZE;
 	xFood=xFood/(SIZE*2)*SIZE*2;
-	yFood=std::rand()%550+SIZE*2;
+	if(xFood==0) xFood=25;
+	yFood=std::rand()%550+SIZE;
 	yFood=yFood/(SIZE*2)*SIZE*2;
+	if(yFood==0) yFood=25;
 }
 
 void drawSnake()
@@ -80,7 +83,11 @@ void reshape(int w, int h)
 void timer(int)
 {
 	if(addNew)
+	{
+		if(snake.size()%5==0)
+			timerFreq=timerFreq-100;
 		snake.push_back({snake.back().x, snake.back().y});
+	}
 	for(uint16_t i=snake.size()-1;i>0;i--)
 		snake.at(i)=snake.at(i-1);
 	if(activeKey=='u') snake.at(0).y+=SIZE*2;
@@ -95,7 +102,7 @@ void timer(int)
 			//exit(0);
 			loseOutput();
 	addNew=false;
-	glutTimerFunc(1000, timer, 0);
+	glutTimerFunc(timerFreq, timer, 0);
 }
 
 void idle()
@@ -144,7 +151,7 @@ int main(int argc, char *argv[])
 	glutDisplayFunc(display);
 	glutSpecialFunc(onArrowPress);
 	glutIdleFunc(idle);
-	glutTimerFunc(1000, timer, 0);
+	glutTimerFunc(timerFreq, timer, 0);
 	glClearColor(0,0,0,0);
 	glutMainLoop();
 	return 0;
